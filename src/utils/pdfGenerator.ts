@@ -1,5 +1,21 @@
 
-export const generatePDFWithKaTeX = (content: string, filename: string = 'document.pdf') => {
+interface PDFOptions {
+  content: string;
+  filename?: string;
+  title?: string;
+  subtitle?: string;
+  date?: string;
+}
+
+export const generatePDFWithKaTeX = (options: PDFOptions) => {
+  const { 
+    content, 
+    filename = 'document.pdf',
+    title = filename.replace('.pdf', ''),
+    subtitle = '',
+    date = new Date().toLocaleDateString()
+  } = options;
+  
   const printWindow = window.open('', '_blank');
   if (!printWindow) {
     alert('Please allow popups to download PDF');
@@ -74,6 +90,13 @@ export const generatePDFWithKaTeX = (content: string, filename: string = 'docume
           font-weight: bold;
         }
         
+        .header h2 {
+          margin: 8px 0 0 0;
+          font-size: 16px;
+          font-weight: normal;
+          color: #555;
+        }
+        
         .section-header {
           font-size: 18px;
           font-weight: bold;
@@ -113,6 +136,15 @@ export const generatePDFWithKaTeX = (content: string, filename: string = 'docume
           font-weight: 600;
         }
         
+        .instructions {
+          background-color: #f0f7ff;
+          border: 1px solid #cce5ff;
+          border-radius: 4px;
+          padding: 10px 15px;
+          margin-bottom: 20px;
+          font-style: italic;
+        }
+        
         @media print {
           body { 
             margin: 0;
@@ -133,8 +165,9 @@ export const generatePDFWithKaTeX = (content: string, filename: string = 'docume
     </head>
     <body>
       <div class="header">
-        <h1>${filename.replace('.pdf', '')}</h1>
-        <p style="margin: 5px 0; color: #666; font-size: 12px;">Generated on ${new Date().toLocaleDateString()}</p>
+        <h1>${title}</h1>
+        ${subtitle ? `<h2>${subtitle}</h2>` : ''}
+        <p style="margin: 5px 0; color: #666; font-size: 12px;">Generated on ${date}</p>
       </div>
       
       <div class="content">

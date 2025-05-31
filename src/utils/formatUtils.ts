@@ -14,17 +14,10 @@ export const cleanAIResponse = (text: string): string => {
     .replace(/_([^_]+)_/g, '$1')
     // Remove code block markers
     .replace(/```[a-zA-Z]*\n?/g, '')
-    .replace(/`([^`]+)`/g, '$1')
     // Remove other special characters but keep mathematical symbols and LaTeX
-    .replace(/[!@#$%^&*()_+=\[\]{};':"\\|,.<>?~`]/g, (match) => {
-      // Keep mathematical symbols and LaTeX commands
-      if (/[\\]|[{}]|\^|_|\$/.test(match)) {
-        return match;
-      }
-      return '';
-    })
+
     // Clean up multiple spaces and newlines
-    .replace(/\s+/g, ' ')
+    .replace(/\s{2,}/g, ' ')
     .replace(/\n\s*\n/g, '\n\n')
     .trim();
 };
@@ -59,6 +52,20 @@ export const prepareMathContent = (text: string): string => {
     // Convert superscripts and subscripts
     .replace(/\^(\d+)/g, '^{$1}')
     .replace(/_(\d+)/g, '_{$1}')
+    // Wrap common math patterns in $...$ for KaTeX rendering
+    .replace(/([a-zA-Z])\^\{([^}]+)\}|([a-zA-Z])_\{([^}]+)\}|\\(alpha|beta|gamma|delta|epsilon|theta|lambda|mu|pi|sigma|tau|phi|omega|pm|mp|times|div|cdot|infty|sum|int|geq|leq|neq|approx|sin|cos|tan|cot|sec|csc)\b|\b([a-zA-Z])(\d+)\b/g, (match, p1, p2, p3, p4, p5, p6, p7) => {
+      // Avoid double wrapping if already inside $...$ or $$...$$
+      if (match.startsWith('$') || match.startsWith('$$')) {
+        return match;
+      }
+      // Handle cases like x2, y3 as x_2, y_3
+      if (p6 && p7 && !isNaN(Number(p7))) {
+        return `$${p6}_{${p7}}$`;
+      }
+      return `$${match}$`;
+    })
+    // Remove curly braces from Q_{1} to Q1
+    .replace(/Q_\{(\d+)\}\./g, 'Q$1.')
     
     // Convert Greek letters
     .replace(/\\alpha\b/gi, '$\\alpha$')

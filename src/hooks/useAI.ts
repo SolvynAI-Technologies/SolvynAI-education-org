@@ -84,8 +84,13 @@ export function useAI() {
     }
   };
 
+  const generateText = async (prompt: string): Promise<string | null> => {
+    const response = await callAI(prompt, 'question-generator');
+    return response ? response.response : null;
+  };
+
   return {
-    callAI,
+    generateText,
     loading,
     error
   };

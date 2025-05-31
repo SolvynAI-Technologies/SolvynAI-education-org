@@ -19,25 +19,25 @@ const FeatureNavbar: React.FC<FeatureNavbarProps> = ({ isOpen, onClose }) => {
   ];
 
   return (
-    <div className={`fixed bottom-16 left-1/2 -translate-x-1/2 transform transition-all duration-300 ${isOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-0 pointer-events-none'}`}>
-      <div className="relative w-64 h-32 bg-white dark:bg-gray-800 rounded-t-full shadow-lg flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 flex items-center justify-around px-4">
-          {featureItems.map((item, index) => {
-            const Icon = item.icon;
-            const isActive = location.pathname === item.path;
-            return (
-              <Link
-                key={item.path}
-                to={item.path}
-                onClick={onClose}
-                className={`flex flex-col items-center justify-center w-1/5 h-full text-center transition-colors duration-200 ${isActive ? 'text-green-500' : 'text-gray-600 dark:text-gray-400'}`}
-              >
-                <Icon className="h-5 w-5 mb-1" />
-                <span className="text-xs font-medium truncate">{item.label}</span>
-              </Link>
-            );
-          })}
-        </div>
+    <div className={`fixed bottom-16 left-1/2 -translate-x-1/2 transform transition-all duration-300 ${isOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}>
+        <div className="relative w-auto p-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg flex items-center justify-center overflow-hidden">
+        <div className="flex items-center justify-around space-x-4">
+           {featureItems.map((item, index) => {
+             const Icon = item.icon;
+             const isActive = location.pathname === item.path;
+             return (
+               <Link
+                 key={item.path}
+                 to={item.path}
+                 onClick={onClose}
+                 className={`flex flex-col items-center justify-center text-center transition-colors duration-200 ${isActive ? 'text-green-500' : 'text-gray-600 dark:text-gray-400'}`}
+               >
+                 <Icon className="h-5 w-5 mb-1" />
+                 <span className="text-xs font-medium truncate">{item.label}</span>
+               </Link>
+             );
+           })}
+         </div>
       </div>
     </div>
   );
